@@ -7,13 +7,16 @@ public class FoundFamily : MonoBehaviour
     [Header("Win Screen UI")]
     public GameObject winScreen;
 
+    [Header("Detection")]
+    public LayerMask whatIsFamily;
+
     private bool foundFam = false;
 
     private void OnCollisionEnter(Collision collision)
     {
         if (foundFam) return;
 
-        if (collision.gameObject.CompareTag("Family"))
+        if ((whatIsFamily.value & (1 << collision.gameObject.layer)) != 0)
         {
             Found();
         }
