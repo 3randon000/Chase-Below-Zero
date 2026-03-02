@@ -7,10 +7,10 @@ public class SealMovement : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 5f;
-    public float jumpForce = 5f;
-    public float jumpCooldown = 0.5f;
+    //public float jumpForce = 5f;
+    //public float jumpCooldown = 0.5f;
     public float airMultiplier = 0.5f;
-    bool jumpHeld;
+    //bool jumpHeld;
 
     public float waterDrag = 4f;
     public float airDrag = 0f;
@@ -18,16 +18,18 @@ public class SealMovement : MonoBehaviour
     [Header("Checks")]
     public LayerMask whatIsGround;
     public LayerMask whatIsWater;
+    public LayerMask whatIsKelp;
     public float groundCheckDistance = 0.6f; // adjust to seal height
     public Transform orientation;
 
-    [Header("Input")]
-    public KeyCode jumpKey = KeyCode.Space;
+    //[Header("Input")]
+    //public KeyCode jumpKey = KeyCode.Space;
 
     Rigidbody rb;
-    bool readyToJump = true;
+    //bool readyToJump = true;
     bool isGrounded;
     bool isInWater;
+    public bool IsHidden;
 
     float horizontalInput;
     float verticalInput;
@@ -57,10 +59,10 @@ public class SealMovement : MonoBehaviour
         rb.drag = isInWater ? waterDrag : airDrag;
         rb.useGravity = true;
 
-        if (jumpHeld && readyToJump && isGrounded && !isInWater)
+        /*if (jumpHeld && readyToJump && isGrounded && !isInWater)
         {
-            //Jump();
-        }
+            Jump();
+        }*/
 
 
         SpeedControl();
@@ -134,11 +136,15 @@ public class SealMovement : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & whatIsWater) != 0)
             isInWater = true;
+        if (((1 << other.gameObject.layer) & whatIsKelp) != 0)
+            IsHidden = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & whatIsWater) != 0)
             isInWater = false;
+        if (((1 << other.gameObject.layer) & whatIsKelp) != 0)
+            IsHidden = false;
     }
 }
