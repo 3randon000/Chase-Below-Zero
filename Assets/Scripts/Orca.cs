@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class character : MonoBehaviour
+public class Orca : MonoBehaviour
 {
     [SerializeField] float waitTimeOnWayPoint = 1f;
     [SerializeField] Path path;
