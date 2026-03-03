@@ -1,21 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class OrcaDeviation : MonoBehaviour
 {
-    [Header("Hunting Prey")]
+    [Header("Hunting")]
     public Transform seal;
     public float detectionRange = 20f;
-
-    [Header("Hunting Speed")]
-    public float chaseSpeed = 8f;
-
-    [Header("Hunting...wait where did you go?")]
-    public float lingerTime = 4f;
+    public float chaseSpeed = 10f;
+    public float lingerTime = 3f;
 
     private SealMovement sealMovement;
-    private Path patrol;
+    private NavMeshAgent agent;
+    private Orca patrolScript;
 
     private bool chasing = false;
     private bool searching = false;
@@ -23,25 +21,25 @@ public class OrcaDeviation : MonoBehaviour
 
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
+        patrolScript = GetComponent<Orca>();
         sealMovement = seal.GetComponent<SealMovement>();
-        patrol = GetComponent<Path>();
     }
 
     void Update()
     {
         float distance = Vector3.Distance(transform.position, seal.position);
 
-        // PATROL STATE
         if (!chasing && !searching)
         {
             if (distance <= detectionRange && !sealMovement.IsHidden)
             {
                 chasing = true;
-                patrol.enabled = false; // stop normal path
+                patrolScript.enabled = false;  
+                agent.ResetPath();           
             }
         }
 
-        // CHASE STATE
         if (chasing)
         {
             if (sealMovement.IsHidden)
@@ -49,14 +47,21 @@ public class OrcaDeviation : MonoBehaviour
                 chasing = false;
                 searching = true;
                 searchTimer = lingerTime;
+                agent.ResetPath();
+                return;
             }
-            else
-            {
-                MoveTowards(seal.position, chaseSpeed);
-            }
-        }
 
-        // SEARCH STATE
+            agent.speed = chaseSpeed;
+            agent.acceleration = 50f;
+            agent.angularSpeed = 720f;
+            agent.stoppingDistance = 0f;
+            agent.autoBraking = false;
+
+            Vector3 dir = (seal.position - transform.position).normalized;
+            Vector3 attackPoint = seal.position + dir * 1.5f;
+
+            agent.SetDestination(attackPoint);
+        }
         if (searching)
         {
             searchTimer -= Time.deltaTime;
@@ -64,19 +69,9 @@ public class OrcaDeviation : MonoBehaviour
             if (searchTimer <= 0f)
             {
                 searching = false;
-                patrol.enabled = true; // smoothly resumes path
+                agent.ResetPath();
+                patrolScript.enabled = true;
             }
         }
-    }
-
-    void MoveTowards(Vector3 target, float speed)
-    {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target,
-            speed * Time.deltaTime
-        );
-
-        transform.LookAt(target);
     }
 }
