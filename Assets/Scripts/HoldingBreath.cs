@@ -9,27 +9,43 @@ public class SealBreath : MonoBehaviour
     public float drainRate = 1f;
     public float refillRate = 3f;
 
+    [Header("Detection Layers")]
+    public LayerMask whatIsWater;
+    public LayerMask whatIsAirHole;
+
     [Header("Lose Screen UI")]
     public GameObject loseScreen;
 
-    private float currentBreath;
-    private bool inWater = false;
-    private bool inAirHole = false;
-    private bool isDead = false;
+    float currentBreath;
+
+    bool inWater = false;
+    bool inAirHole = false;
+    bool isDead = false;
+
+    int waterContacts = 0;
+    int airHoleContacts = 0;
 
     void Start()
     {
         currentBreath = maxBreath;
+        Debug.Log("Breath system initialized. Breath = " + currentBreath);
     }
 
     void Update()
     {
         if (isDead) return;
-
         if (inWater && !inAirHole)
+        {
             currentBreath -= drainRate * Time.deltaTime;
+
+            Debug.Log($"Breath DRAINING | Breath: {currentBreath:F2} | WaterContacts: {waterContacts} | AirHoleContacts: {airHoleContacts}");
+        }
         else
+        {
             currentBreath += refillRate * Time.deltaTime;
+
+            Debug.Log($"Breath REFILLING | Breath: {currentBreath:F2} | WaterContacts: {waterContacts} | AirHoleContacts: {airHoleContacts}");
+        }
 
         currentBreath = Mathf.Clamp(currentBreath, 0f, maxBreath);
 
@@ -37,10 +53,10 @@ public class SealBreath : MonoBehaviour
             Die();
     }
 
-    private void Die()
+    void Die()
     {
         isDead = true;
-        Debug.Log("You Drowned LOL");
+        Debug.Log("Seal drowned LOL!");
 
         if (loseScreen != null)
             loseScreen.SetActive(true);
@@ -49,22 +65,52 @@ public class SealBreath : MonoBehaviour
         if (movement != null)
             movement.enabled = false;
     }
-
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("whatIsWater"))
+        Debug.Log("Entered trigger: " + other.name);
+
+        if (((1 << other.gameObject.layer) & whatIsWater) != 0)
+        {
+            waterContacts++;
             inWater = true;
 
-        if (other.CompareTag("whatIsAirHole"))
+            Debug.Log("Entered WATER | Contacts: " + waterContacts);
+        }
+        if (((1 << other.gameObject.layer) & whatIsAirHole) != 0)
+        {
+            airHoleContacts++;
             inAirHole = true;
+
+            Debug.Log("Entered AIR HOLE | Contacts: " + airHoleContacts);
+        }
     }
-
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("whatIsWater"))
-            inWater = false;
+        Debug.Log("Exited trigger: " + other.name);
 
-        if (other.CompareTag("whatIsAirHole"))
-            inAirHole = false;
+        if (((1 << other.gameObject.layer) & whatIsWater) != 0)
+        {
+            waterContacts--;
+
+            if (waterContacts <= 0)
+            {
+                waterContacts = 0;
+                inWater = false;
+            }
+
+            Debug.Log("Exited WATER | Contacts: " + waterContacts);
+        }
+        if (((1 << other.gameObject.layer) & whatIsAirHole) != 0)
+        {
+            airHoleContacts--;
+
+            if (airHoleContacts <= 0)
+            {
+                airHoleContacts = 0;
+                inAirHole = false;
+            }
+
+            Debug.Log("Exited AIR HOLE | Contacts: " + airHoleContacts);
+        }
     }
 }

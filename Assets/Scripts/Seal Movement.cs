@@ -30,6 +30,7 @@ public class SealMovement : MonoBehaviour
     bool isGrounded;
     bool isInWater;
     public bool IsHidden;
+    int waterContacts = 0;
 
     float horizontalInput;
     float verticalInput;
@@ -135,6 +136,7 @@ public class SealMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & whatIsWater) != 0)
+            waterContacts++;
             isInWater = true;
         if (((1 << other.gameObject.layer) & whatIsKelp) != 0)
             IsHidden = true;
@@ -143,7 +145,13 @@ public class SealMovement : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & whatIsWater) != 0)
-            isInWater = false;
+            waterContacts--;
+            if (waterContacts <= 0)
+            {
+                waterContacts = 0;
+                isInWater = false;
+            }
+
         if (((1 << other.gameObject.layer) & whatIsKelp) != 0)
             IsHidden = false;
     }
