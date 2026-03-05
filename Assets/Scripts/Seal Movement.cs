@@ -19,6 +19,7 @@ public class SealMovement : MonoBehaviour
     public LayerMask whatIsGround;
     public LayerMask whatIsWater;
     public LayerMask whatIsKelp;
+    public LayerMask whatIsAirHole;
     public float groundCheckDistance = 0.6f; // adjust to seal height
     public Transform orientation;
 
@@ -140,6 +141,9 @@ public class SealMovement : MonoBehaviour
             isInWater = true;
         if (((1 << other.gameObject.layer) & whatIsKelp) != 0)
             IsHidden = true;
+
+        if (((1 << other.gameObject.layer) & whatIsAirHole) != 0)
+            IsHidden = true;
     }
 
     private void OnTriggerExit(Collider other)
@@ -153,6 +157,9 @@ public class SealMovement : MonoBehaviour
             }
 
         if (((1 << other.gameObject.layer) & whatIsKelp) != 0)
+            IsHidden = false;
+
+        if (((1 << other.gameObject.layer) & whatIsAirHole) != 0)
             IsHidden = false;
     }
 }

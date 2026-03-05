@@ -176,6 +176,9 @@ MonoBehaviour:
   whatIsKelp:
     serializedVersion: 2
     m_Bits: 512
+  whatIsAirHole:
+    serializedVersion: 2
+    m_Bits: 128
   groundCheckDistance: 0.6
   orientation: {fileID: 2379786656425027474}
   IsHidden: 0
@@ -194,6 +197,12 @@ MonoBehaviour:
   maxBreath: 10
   drainRate: 1
   refillRate: 3
+  whatIsWater:
+    serializedVersion: 2
+    m_Bits: 64
+  whatIsAirHole:
+    serializedVersion: 2
+    m_Bits: 128
   loseScreen: {fileID: 0}
 --- !u!114 &8255282069577447467
 MonoBehaviour:
