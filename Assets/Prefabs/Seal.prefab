@@ -203,7 +203,7 @@ MonoBehaviour:
   whatIsAirHole:
     serializedVersion: 2
     m_Bits: 128
-  loseScreen: {fileID: 0}
+  loseScreen: {fileID: 7981633049134579820, guid: c74324b7cc8eabe42af701b498928ef0, type: 3}
 --- !u!114 &8255282069577447467
 MonoBehaviour:
   m_ObjectHideFlags: 0

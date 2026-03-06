@@ -61,6 +61,9 @@ public class SealBreath : MonoBehaviour
         if (loseScreen != null)
             loseScreen.SetActive(true);
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         SealMovement movement = GetComponent<SealMovement>();
         if (movement != null)
             movement.enabled = false;

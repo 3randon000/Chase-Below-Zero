@@ -30,6 +30,9 @@ public class FoundFamily : MonoBehaviour
         if (winScreen != null)
             winScreen.SetActive(true);
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         SealMovement movement = GetComponent<SealMovement>();
         if (movement != null)
             movement.enabled = false;
