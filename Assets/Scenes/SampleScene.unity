@@ -51337,7 +51337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7138388506366384276, guid: c046597a5d44d7f4caa0bee0d9d1fe48, type: 3}
       propertyPath: maxBreath
-      value: 10
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 7138388506366384276, guid: c046597a5d44d7f4caa0bee0d9d1fe48, type: 3}
       propertyPath: loseScreen
